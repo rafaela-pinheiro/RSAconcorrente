@@ -43,7 +43,7 @@ void *descriptarThread(void *arg){
     //argumentos = args->argumentos;
     mpz_t *r;
     mpz_init(&r);
-    for(int i = id + 3; i < gargc; i+=NTHREADS){
+    for(int i = id; i < gargc; i+=NTHREADS){
         descriptarGMP(gargv[i], n, d, &r);
         gmp_printf("DESCRIPTADO PELA Thread %d: %Zd\n", id, &r);
         gargv[i] = mpz_get_str(NULL, 10, &r);
@@ -333,19 +333,53 @@ int simboloParaCodigo(char simbolo){
         return 153;
 }
 
-int main(int argc, char *argv[]){ // tentando passar o bloco, n e d por linha de comando b[1] = n b[2] = d b[3] = bloco b[4] outro bloco e assim vai
+char *lerArquivo(char *arquivo){
+    FILE *arq;
+    char *texto;
+    int tamanho;
+    arq = fopen(arquivo, "r");
+    if(arq == NULL){
+        printf("Erro ao abrir o arquivo");
+        exit(1);
+    }
+    fseek(arq, 0, SEEK_END);
+    tamanho = ftell(arq);
+    fseek(arq, 0, SEEK_SET);
+    texto = (char *) malloc(tamanho+1 * sizeof(char));
+    
+    char c;
+    int i = 0;
+    while((c = fgetc(arq)) != EOF){
+        texto[i] = c;
+        i++;
+    }
+    texto[i] = '\0';
+    fclose(arq);
+    return texto;
+}
+
+int main(int argc, char *argv[]){ // tentando passar o bloco, n e d e o nome do arquivo com os outros blocos
     pthread_t tid[NTHREADS];
     t_Args *args;
     char *n, *d;
     n = argv[1];
     d = argv[2];
-    gargv = argv;
-    gargc = argc;
-    printf("QNT ARGUMENTOS: %d\n", argc);
-    long long b;
-    b = descriptar(115901, 210649, 41933);
-    printf("%lld", b);
-    printf("\n");
+    char *texto = lerArquivo(argv[3]);
+    int qntBlocos = 1;
+    for(int i = 0; i < strlen(texto); i++){
+        if(texto[i] == ' '){
+            qntBlocos++;
+        }
+    }
+    char *strings[qntBlocos];
+    int j = 0;
+    strings[j] = strtok(texto, " ");
+    while(strings[j] != NULL){
+        j++;
+        strings[j] = strtok(NULL, " ");
+    }
+    gargv = strings;
+    gargc = qntBlocos;
     for(int i=0; i<NTHREADS;i++){
         args = malloc(sizeof(t_Args));
         args->id = i;
@@ -358,12 +392,12 @@ int main(int argc, char *argv[]){ // tentando passar o bloco, n e d por linha de
     for(int i=0; i<NTHREADS;i++){
         pthread_join(tid[i], NULL);
     }
-    for(int i = 3; i < argc; i++){
+    for(int i = 0; i < gargc; i++){
         printf("DESCRIPTADO: %s\n", gargv[i]);
     }
     char str[3];
     int k = 0;
-    for(int i  =3; i < argc; i++){
+    for(int i=0; i < gargc; i++){
         for(int j = 0; j < strlen(gargv[i]); j++){
             str[k] = gargv[i][j];
             k++;
@@ -373,11 +407,4 @@ int main(int argc, char *argv[]){ // tentando passar o bloco, n e d por linha de
             }
         }
     }
-    /* Uso do descriptar GMP sequencial na propria main
-    mpz_t *r;
-    mpz_init(&r);
-    descriptarGMP("1514730309574", "13527252160957", "1229749519127", &r);
-    gmp_printf("Resultado: %Zd\n", &r);
-    printf("\n");
-    */
 }
