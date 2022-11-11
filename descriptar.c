@@ -44,9 +44,9 @@ void *descriptarThread(void *arg){
     mpz_t *r;
     mpz_init(&r);
     for(int i = id; i < gargc; i+=NTHREADS){
-        descriptarGMP(gargv[i], n, d, &r);
-        gmp_printf("DESCRIPTADO PELA Thread %d: %Zd\n", id, &r);
-        gargv[i] = mpz_get_str(NULL, 10, &r);
+        descriptarGMP(gargv[i], n, d, &r); //Descripta o bloco, passando o resultado para o &r
+        gmp_printf("DESCRIPTADO PELA Thread %d: %Zd\n", id, &r); 
+        gargv[i] = mpz_get_str(NULL, 10, &r); //Converte o mpz_t para string e salva no vetor de strings
     }
     free(arg);
     pthread_exit(NULL);
@@ -100,7 +100,7 @@ void codigoParaSimbolo(char *str){
         printf("g");
     if(a == 135)    
         printf("h");
-    if(a == 136)                                                                                                                                
+    if(a == 136)                        
         printf("i");
     if(a == 137)    
         printf("j");
@@ -237,7 +237,7 @@ void codigoParaSimbolo(char *str){
     if(a == 234)
         printf("$");
     if(a == 235)
-        printf("%");    
+        printf("%%");    
     if(a == 236)
         printf("@");
     if(a == 237)
@@ -337,15 +337,15 @@ char *lerArquivo(char *arquivo){
     FILE *arq;
     char *texto;
     int tamanho;
-    arq = fopen(arquivo, "r");
+    arq = fopen(arquivo, "r"); //Abertura do arquivo
     if(arq == NULL){
         printf("Erro ao abrir o arquivo");
         exit(1);
     }
-    fseek(arq, 0, SEEK_END);
-    tamanho = ftell(arq);
-    fseek(arq, 0, SEEK_SET);
-    texto = (char *) malloc(tamanho+1 * sizeof(char));
+    fseek(arq, 0, SEEK_END); //Movendo o ponteiro pro final do arquivo
+    tamanho = ftell(arq); //Pegando a posição do ponteiro (nosso tamanho do arquivo)
+    fseek(arq, 0, SEEK_SET); // Voltando o ponteiro pro inicio do arquivo
+    texto = (char *) malloc(tamanho+1 * sizeof(char)); //Alocando o espaço necessário
     
     char c;
     int i = 0;
@@ -366,7 +366,7 @@ int main(int argc, char *argv[]){ // tentando passar o bloco, n e d e o nome do 
     d = argv[2];
     char *texto = lerArquivo(argv[3]);
     int qntBlocos = 1;
-    for(int i = 0; i < strlen(texto); i++){
+    for(int i = 0; i < strlen(texto); i++){ //Começa o processo de seperação da strings
         if(texto[i] == ' '){
             qntBlocos++;
         }
