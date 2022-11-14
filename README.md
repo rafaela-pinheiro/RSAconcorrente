@@ -19,6 +19,6 @@ Para recuperar a mensagem $m$ a partir de $c$, é necessário calcular $m \equiv
 A segurança desse tipo de criptografia é baseada na dificuldade de fatoração de números tão grandes. Se conseguirmos fatorar $n$, então conseguimos calcular $p$ e $q$, e com isso, a chave privada $d$. Portanto, utilizamos a biblioteca GMP (GNU Multiple Precision Arithmetic Library) para realizar operações com números grandes e não comprometer a segurança do RSA.
 
 ## To do
-- [ ] Resolver a falha de segmentação (com arquivos grandes) em descriptar.c
+- [x] Resolver a falha de segmentação (com arquivos grandes) em descriptar.c
 - [ ] Atualizar programa em python que gera os blocos encriptados
 - [ ] Atualizar dicionário número->letra e letra->número, removendo caracteres que não aparecem no prompt
