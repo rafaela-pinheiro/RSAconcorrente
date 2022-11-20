@@ -22,3 +22,6 @@ A segurança desse tipo de criptografia é baseada na dificuldade de fatoração
 - [x] Resolver a falha de segmentação (com arquivos grandes) em descriptar.c
 - [ ] Atualizar programa em python que gera os blocos encriptados
 - [ ] Atualizar dicionário número->letra e letra->número, removendo caracteres que não aparecem no prompt
+- [ ] Gerar txt (em python) do texto original sem acentos
+- [ ] Gerar txt (em c) do texto descriptado (sem acentos)
+- [ ] Nos testes, comparar o txt descriptado com o txt original

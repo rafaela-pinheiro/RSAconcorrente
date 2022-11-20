@@ -23,6 +23,15 @@ typedef struct
 char **gargv;
 int gargc;
 
+char codSim[104] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', ' ', '9',
+                    '=', '+', '-', '/', '*', 'a', 'b', 'c', ' ', 'd', 'e', 'f', 'g', 'h', 'i',
+                    'j', 'k', 'l', ' ', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', ' ', 'v',
+                    'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', ' ', 'E', 'F', 'G', 'H', 'I', 'J',
+                    'K', 'L', 'M', ' ', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', ' ', 'W',
+                    'X', 'Y', 'Z', ',', '.', '!', '?', ';', ' ', ':', '_', '(', ')', '\'', '#',
+                    '$', '%', '@', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+                    '\n', '{', '}'};
+
 // Para descriptar, recebe o bloco, o modulo e a chave privada. Também recebe o R para ser o valor de retorno.
 void descriptarGMP(char *bloco, char *n, char *d, mpz_t *r)
 {
@@ -53,6 +62,7 @@ void *descriptarThread(void *arg)
     free(arg);
     pthread_exit(NULL);
 }
+/*
 void codigoParaSimbolo(char *str)
 {
     int a;
@@ -254,87 +264,17 @@ void codigoParaSimbolo(char *str)
     if (a == 242)
         printf("'");
 }
+*/
 
-int simboloParaCodigo(char simbolo)
+char codigoParaSimbolo(int codigo)
 {
-    if (simbolo == '0')
-        return 111;
-    if (simbolo == '1')
-        return 112;
-    if (simbolo == '2')
-        return 113;
-    if (simbolo == '3')
-        return 114;
-    if (simbolo == '4')
-        return 115;
-    if (simbolo == '5')
-        return 116;
-    if (simbolo == '6')
-        return 117;
-    if (simbolo == '7')
-        return 118;
-    if (simbolo == '8')
-        return 119;
-    if (simbolo == '9')
-        return 121;
-    if (simbolo == '=')
-        return 122;
-    if (simbolo == '+')
-        return 123;
-    if (simbolo == '-')
-        return 124;
-    if (simbolo == '/')
-        return 125;
-    if (simbolo == '*')
-        return 126;
-    if (simbolo == 'a')
-        return 127;
-    if (simbolo == 'b')
-        return 128;
-    if (simbolo == 'c')
-        return 129;
-    if (simbolo == 'd')
-        return 131;
-    if (simbolo == 'e')
-        return 132;
-    if (simbolo == 'f')
-        return 133;
-    if (simbolo == 'g')
-        return 134;
-    if (simbolo == 'h')
-        return 135;
-    if (simbolo == 'i')
-        return 136;
-    if (simbolo == 'j')
-        return 137;
-    if (simbolo == 'k')
-        return 138;
-    if (simbolo == 'l')
-        return 139;
-    if (simbolo == 'm')
-        return 141;
-    if (simbolo == 'n')
-        return 142;
-    if (simbolo == 'o')
-        return 143;
-    if (simbolo == 'p')
-        return 144;
-    if (simbolo == 'q')
-        return 145;
-    if (simbolo == 'r')
-        return 146;
-    if (simbolo == 's')
-        return 147;
-    if (simbolo == 't')
-        return 148;
-    if (simbolo == 'u')
-        return 149;
-    if (simbolo == 'v')
-        return 151;
-    if (simbolo == 'w')
-        return 152;
-    if (simbolo == 'x')
-        return 153;
+    int temp;
+    for (int i = 0; i < 104; i++)
+    {
+        temp = 111 + i;
+        if (codigo == temp)
+            return codSim[i];
+    }
 }
 
 char *lerArquivo(char *arquivo)
@@ -363,6 +303,40 @@ char *lerArquivo(char *arquivo)
     texto[i] = '\0';
     fclose(arq);
     return texto;
+}
+
+void escreverArquivo()
+{
+    FILE *arq;
+    arq = fopen("textoSaida.txt", "w");
+    if (arq == NULL)
+    {
+        printf("Erro ao abrir o arquivo");
+        exit(1);
+    }
+    
+    /* Conversão de código para símbolo */
+    // Recebe os três dígitos para convertê-los para a letra correspondente
+    char str[3], simbolo;
+    int digitos = 0;
+    for (int i = 0; i < gargc; i++)
+    {
+        for (int j = 0; j < strlen(gargv[i]); j++)
+        {
+            str[digitos] = gargv[i][j];
+            digitos++;
+            if (digitos == 3)
+            {
+                // Se digitos == 3, já temos um código completo e podemos converter
+                simbolo = codigoParaSimbolo(atoi(str));
+                // Escreve o char no arquivo
+                fputc(simbolo, arq);
+                digitos = 0;
+            }
+        }
+    }
+    
+    fclose(arq);
 }
 
 int main(int argc, char *argv[])
@@ -418,24 +392,8 @@ int main(int argc, char *argv[])
         printf("DESCRIPTADO: %s\n", gargv[i]);
     }
 
-    // Recebe os três dígitos para convertê-los para a letra correspondente
-    char str[3];
-    int k = 0;
-    for (int i = 0; i < gargc; i++)
-    {
-        for (int j = 0; j < strlen(gargv[i]); j++)
-        {
-            str[k] = gargv[i][j];
-            k++;
-            if (k == 3)
-            {
-                // Se k == 3, já temos um código completo e podemos converter
-                codigoParaSimbolo(str);
-                k = 0;
-            }
-        }
-    }
-
+    escreverArquivo();
+    
     // Finaliza a contagem do tempo
     GET_TIME(fim);
     elapsed = fim - inicio;
