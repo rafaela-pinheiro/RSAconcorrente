@@ -9,6 +9,7 @@
 char **blocos;
 int qnt;
 double inicio, fim, elapsed;
+mpz_t r;
 // Tabela de correspodência entre os caracteres e seus códigos
 char codSim[104] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', ' ', '9',
                     '=', '+', '-', '/', '*', 'a', 'b', 'c', ' ', 'd', 'e', 'f', 'g', 'h', 'i',
@@ -19,13 +20,13 @@ char codSim[104] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', ' ', '9',
                     '$', '%', '@', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
                     '\n', '{', '}'};
 
-void descriptarGMP(char *bloco, char *n, char *d, mpz_t *r)
+void descriptarGMP(char *bloco, char *n, char *d)
 {
     mpz_t b, N, D;
     mpz_init_set_str(b, bloco, 0);
     mpz_init_set_str(N, n, 0);
     mpz_init_set_str(D, d, 0);
-    mpz_powm(*r, b, D, N);
+    mpz_powm(r, b, D, N);
 }
 char *lerArquivo(char *arquivo)
 {
@@ -67,11 +68,10 @@ char codigoParaSimbolo(int codigo)
 
 void descriptar(char *n, char *d)
 {
-    mpz_t r;
     mpz_init(r);
     for (int i = 0; i < qnt; i++)
     {
-        descriptarGMP(blocos[i], n, d, &r);
+        descriptarGMP(blocos[i], n, d);
         blocos[i] = mpz_get_str(NULL, 0, r);
     }
 }
@@ -118,40 +118,30 @@ int main(int argc, char *argv[])
         printf("Digite: %s <arquivo> \n", argv[0]);
         return 1;
     }
-
-
     char *texto = lerArquivo(argv[1]);
     int qntBlocos = 1;
+
+    // Conta a quantidade de blocos
     for (int i = 0; i < strlen(texto); i++)
-    { // Começa o processo de seperação da strings
+    {
         if (texto[i] == ' ')
-        {
             qntBlocos++;
-        }
     }
-    qntBlocos -= 2;
-    char *blocos_separados[qntBlocos];
+    qntBlocos -= 2; // Retira os dois primeiros blocos (n e d)
+    qnt = qntBlocos;
+    blocos = (char **)malloc(qntBlocos * sizeof(char *));
     int j = 0;
     n = strtok(texto, " ");
     d = strtok(NULL, " ");
-    blocos_separados[j] = strtok(texto, " ");
-    while (blocos_separados[j] != NULL)
+    blocos[j] = strtok(NULL, " ");
+    while (blocos[j] != NULL)
     {
         j++;
-        blocos_separados[j] = strtok(NULL, " ");
+        blocos[j] = strtok(NULL, " ");
     }
-    blocos = blocos_separados;
-    qnt = qntBlocos;
     descriptar(n, d);
-    for (int i = 0; i < qnt; i++)
-    {
-        printf("%s ", blocos[i]);
-    }
     escreverArquivo();
     GET_TIME(fim);
-    elapsed = fim - inicio;
-    printf("\nO codigo demorou %f segundos\n", elapsed);
-    // faroeste caboclo teste 1 : 5.220687e-01 segundos
-    // 1.654219e+00 segundos
+    printf("Tempo de execução: %lf\n", fim - inicio);
     return 0;
 }
