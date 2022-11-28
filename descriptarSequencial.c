@@ -9,6 +9,15 @@
 char **blocos;
 int qnt;
 double inicio, fim, elapsed;
+// Tabela de correspodência entre os caracteres e seus códigos
+char codSim[104] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', ' ', '9',
+                    '=', '+', '-', '/', '*', 'a', 'b', 'c', ' ', 'd', 'e', 'f', 'g', 'h', 'i',
+                    'j', 'k', 'l', ' ', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', ' ', 'v',
+                    'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', ' ', 'E', 'F', 'G', 'H', 'I', 'J',
+                    'K', 'L', 'M', ' ', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', ' ', 'W',
+                    'X', 'Y', 'Z', ',', '.', '!', '?', ';', ' ', ':', '_', '(', ')', '\'', '#',
+                    '$', '%', '@', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+                    '\n', '{', '}'};
 
 void descriptarGMP(char *bloco, char *n, char *d, mpz_t *r)
 {
@@ -45,206 +54,15 @@ char *lerArquivo(char *arquivo)
     fclose(arq);     // Fecha o arquivo
     return texto;
 }
-void codigoParaSimbolo(char *str)
+char codigoParaSimbolo(int codigo)
 {
-    int a;
-    a = atoi(str);
-    if (a == 111)
-        printf("0");
-    if (a == 112)
-        printf("1");
-    if (a == 113)
-        printf("2");
-    if (a == 114)
-        printf("3");
-    if (a == 115)
-        printf("4");
-    if (a == 116)
-        printf("5");
-    if (a == 117)
-        printf("6");
-    if (a == 118)
-        printf("7");
-    if (a == 119)
-        printf("8");
-    if (a == 121)
-        printf("9");
-    if (a == 122)
-        printf("=");
-    if (a == 123)
-        printf("+");
-    if (a == 124)
-        printf("-");
-    if (a == 125)
-        printf("/");
-    if (a == 126)
-        printf("*");
-    if (a == 127)
-        printf("a");
-    if (a == 128)
-        printf("b");
-    if (a == 129)
-        printf("c");
-    if (a == 131)
-        printf("d");
-    if (a == 132)
-        printf("e");
-    if (a == 133)
-        printf("f");
-    if (a == 134)
-        printf("g");
-    if (a == 135)
-        printf("h");
-    if (a == 136)
-        printf("i");
-    if (a == 137)
-        printf("j");
-    if (a == 138)
-        printf("k");
-    if (a == 139)
-        printf("l");
-    if (a == 141)
-        printf("m");
-    if (a == 142)
-        printf("n");
-    if (a == 143)
-        printf("o");
-    if (a == 144)
-        printf("p");
-    if (a == 145)
-        printf("q");
-    if (a == 146)
-        printf("r");
-    if (a == 147)
-        printf("s");
-    if (a == 148)
-        printf("t");
-    if (a == 149)
-        printf("u");
-    if (a == 151)
-        printf("v");
-    if (a == 152)
-        printf("w");
-    if (a == 153)
-        printf("x");
-    if (a == 154)
-        printf("y");
-    if (a == 155)
-        printf("z");
-    if (a == 156 || a == 157 || a == 158 || a == 159)
-        printf("a");
-    if (a == 161 || a == 162)
-        printf("e");
-    if (a == 163)
-        printf("i");
-    if (a == 164 || a == 165 || a == 166)
-        printf("o");
-    if (a == 167)
-        printf("u");
-    if (a == 168)
-        printf("c");
-    if (a == 169)
-        printf("A");
-    if (a == 171)
-        printf("B");
-    if (a == 172)
-        printf("C");
-    if (a == 173)
-        printf("D");
-    if (a == 174)
-        printf("E");
-    if (a == 175)
-        printf("F");
-    if (a == 176)
-        printf("G");
-    if (a == 177)
-        printf("H");
-    if (a == 178)
-        printf("I");
-    if (a == 179)
-        printf("J");
-    if (a == 181)
-        printf("K");
-    if (a == 182)
-        printf("L");
-    if (a == 183)
-        printf("M");
-    if (a == 184)
-        printf("N");
-    if (a == 185)
-        printf("O");
-    if (a == 186)
-        printf("P");
-    if (a == 187)
-        printf("Q");
-    if (a == 188)
-        printf("R");
-    if (a == 189)
-        printf("S");
-    if (a == 191)
-        printf("T");
-    if (a == 192)
-        printf("U");
-    if (a == 193)
-        printf("V");
-    if (a == 194)
-        printf("W");
-    if (a == 195)
-        printf("X");
-    if (a == 196)
-        printf("Y");
-    if (a == 197)
-        printf("Z");
-    if (a == 198 || a == 199 || a == 211 || a == 212)
-        printf("A");
-    if (a == 213 || a == 214)
-        printf("E");
-    if (a == 215)
-        printf("I");
-    if (a == 216 || a == 217 || a == 218)
-        printf("O");
-    if (a == 219)
-        printf("U");
-    if (a == 221)
-        printf("C");
-    if (a == 222)
-        printf(",");
-    if (a == 223)
-        printf(".");
-    if (a == 224)
-        printf("!");
-    if (a == 225)
-        printf("?");
-    if (a == 226)
-        printf(";");
-    if (a == 227)
-        printf(":");
-    if (a == 228)
-        printf("_");
-    if (a == 229)
-        printf("(");
-    if (a == 231)
-        printf(")");
-    if (a == 232)
-        printf(".");
-    if (a == 233)
-        printf("#");
-    if (a == 234)
-        printf("$");
-    if (a == 235)
-        printf("%%");
-    if (a == 236)
-        printf("@");
-    if (a == 237)
-        printf(" ");
-    if (a == 238)
-        printf("\n");
-    if (a == 239)
-        printf("{");
-    if (a == 241)
-        printf("}");
-    if (a == 242)
-        printf("'");
+    int temp;
+    for (int i = 0; i < 104; i++)
+    {
+        temp = 111 + i;
+        if (codigo == temp)
+            return codSim[i];
+    }
 }
 
 void descriptar(char *n, char *d)
@@ -257,17 +75,52 @@ void descriptar(char *n, char *d)
         blocos[i] = mpz_get_str(NULL, 0, r);
     }
 }
-
-int main(int argc, char *argv[])
+void escreverArquivo()
 {
-    if (argc != 4)
+    FILE *arq;
+    arq = fopen("textoSaidaSeq.txt", "w");
+    if (arq == NULL)
     {
-        printf("Erro na quantidade de argumentos\n");
+        printf("Erro ao abrir o arquivo");
         exit(1);
     }
 
+    /* Conversão de código para símbolo */
+    // Recebe os três dígitos para convertê-los para a letra correspondente
+    char str[3], simbolo;
+    int digitos = 0;
+    for (int i = 0; i < qnt; i++)
+    {
+        for (int j = 0; j < strlen(blocos[i]); j++)
+        {
+            str[digitos] = blocos[i][j];
+            digitos++;
+            if (digitos == 3)
+            {
+                // Se digitos == 3, já temos um código completo e podemos converter
+                simbolo = codigoParaSimbolo(atoi(str));
+                // Escreve o char no arquivo
+                fputc(simbolo, arq);
+                digitos = 0;
+            }
+        }
+    }
+
+    fclose(arq);
+}
+
+int main(int argc, char *argv[])
+{
+    char *n, *d;
     GET_TIME(inicio);
-    char *texto = lerArquivo(argv[3]);
+    if (argc < 2)
+    {
+        printf("Digite: %s <arquivo> \n", argv[0]);
+        return 1;
+    }
+
+
+    char *texto = lerArquivo(argv[1]);
     int qntBlocos = 1;
     for (int i = 0; i < strlen(texto); i++)
     { // Começa o processo de seperação da strings
@@ -276,8 +129,11 @@ int main(int argc, char *argv[])
             qntBlocos++;
         }
     }
+    qntBlocos -= 2;
     char *blocos_separados[qntBlocos];
     int j = 0;
+    n = strtok(texto, " ");
+    d = strtok(NULL, " ");
     blocos_separados[j] = strtok(texto, " ");
     while (blocos_separados[j] != NULL)
     {
@@ -286,31 +142,12 @@ int main(int argc, char *argv[])
     }
     blocos = blocos_separados;
     qnt = qntBlocos;
-    char *n, *d;
-    n = argv[1];
-    d = argv[2];
     descriptar(n, d);
     for (int i = 0; i < qnt; i++)
     {
         printf("%s ", blocos[i]);
     }
-    char str[3];
-    int k = 0;
-    for (int i = 0; i < qntBlocos; i++)
-    {
-        for (int j = 0; j < strlen(blocos[i]); j++)
-        {
-            // gargv[i] = String correspondente na posição i. Quando a gente pega gargv[i][j], estamos iterando pelos char.
-            str[k] = blocos[i][j];
-
-            k++;
-            if (k == 3)
-            {
-                codigoParaSimbolo(str);
-                k = 0;
-            }
-        }
-    }
+    escreverArquivo();
     GET_TIME(fim);
     elapsed = fim - inicio;
     printf("\nO codigo demorou %f segundos\n", elapsed);

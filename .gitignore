@@ -1,5 +1,2 @@
 # ignorar todos os arquivos do diretório "ignore"
 ignore/
-
-# ignorar arquivos de texto
-*.txt

@@ -6,23 +6,24 @@
 #include <gmp.h>
 #include "timer.h"
 #include <time.h>
-#define NTHREADS 4
 
+int nThreads;
+
+// Variáveis para tomada de tempo
 double inicio, fim, elapsed;
 
+// Estrutura para os argumentos da thread
 typedef struct
 {
     int id;
-    // char *bloco;
     char *n;
     char *d;
-    // char **argumentos;
-    // int qntArgumentos;
 } t_Args;
 
 char **gargv;
 int gargc;
 
+// Tabela de correspodência entre os caracteres e seus códigos
 char codSim[104] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', ' ', '9',
                     '=', '+', '-', '/', '*', 'a', 'b', 'c', ' ', 'd', 'e', 'f', 'g', 'h', 'i',
                     'j', 'k', 'l', ' ', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', ' ', 'v',
@@ -32,239 +33,34 @@ char codSim[104] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', ' ', '9',
                     '$', '%', '@', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
                     '\n', '{', '}'};
 
-// Para descriptar, recebe o bloco, o modulo e a chave privada. Também recebe o R para ser o valor de retorno.
 void descriptarGMP(char *bloco, char *n, char *d, mpz_t *r)
 {
-    char *resString;
+    // Para descriptar, recebe o bloco, o modulo e a chave privada. Também recebe r para ser o valor de retorno
+    // O GMP é uma biblioteca em C que permite fazer aritmética modular com números grandes em C, tratando todos como se fossem stings
     mpz_t b, N, D;
     mpz_init_set_str(b, bloco, 0);
     mpz_init_set_str(N, n, 0);
     mpz_init_set_str(D, d, 0);
-    mpz_powm(*r, b, D, N); // r = b^D (mod N)
+    mpz_powm(*r, b, D, N); // r = b^D (mod N), alterando por referência
 }
+
 void *descriptarThread(void *arg)
 {
     t_Args *args = (t_Args *)arg;
     int id = args->id;
-    // int qntArgumentos = args->qntArgumentos;
     char *n, *d, **argumentos;
     n = args->n;
     d = args->d;
-    // argumentos = args->argumentos;
     mpz_t r;
     mpz_init(r);
-    for (int i = id; i < gargc; i += NTHREADS)
+    for (int i = id; i < gargc; i += nThreads)
     {
-        descriptarGMP(gargv[i], n, d, &r); // Descripta o bloco, passando o resultado para o &r
-        // gmp_printf("DESCRIPTADO PELA Thread %d: %Zd\n", id, r);
+        descriptarGMP(gargv[i], n, d, &r);   // Descripta o bloco, passando o resultado para o &r
         gargv[i] = mpz_get_str(NULL, 10, r); // Converte o mpz_t para string e salva no vetor de strings
     }
     free(arg);
     pthread_exit(NULL);
 }
-/*
-void codigoParaSimbolo(char *str)
-{
-    int a;
-    a = atoi(str);
-    if (a == 111)
-        printf("0");
-    if (a == 112)
-        printf("1");
-    if (a == 113)
-        printf("2");
-    if (a == 114)
-        printf("3");
-    if (a == 115)
-        printf("4");
-    if (a == 116)
-        printf("5");
-    if (a == 117)
-        printf("6");
-    if (a == 118)
-        printf("7");
-    if (a == 119)
-        printf("8");
-    if (a == 121)
-        printf("9");
-    if (a == 122)
-        printf("=");
-    if (a == 123)
-        printf("+");
-    if (a == 124)
-        printf("-");
-    if (a == 125)
-        printf("/");
-    if (a == 126)
-        printf("*");
-    if (a == 127)
-        printf("a");
-    if (a == 128)
-        printf("b");
-    if (a == 129)
-        printf("c");
-    if (a == 131)
-        printf("d");
-    if (a == 132)
-        printf("e");
-    if (a == 133)
-        printf("f");
-    if (a == 134)
-        printf("g");
-    if (a == 135)
-        printf("h");
-    if (a == 136)
-        printf("i");
-    if (a == 137)
-        printf("j");
-    if (a == 138)
-        printf("k");
-    if (a == 139)
-        printf("l");
-    if (a == 141)
-        printf("m");
-    if (a == 142)
-        printf("n");
-    if (a == 143)
-        printf("o");
-    if (a == 144)
-        printf("p");
-    if (a == 145)
-        printf("q");
-    if (a == 146)
-        printf("r");
-    if (a == 147)
-        printf("s");
-    if (a == 148)
-        printf("t");
-    if (a == 149)
-        printf("u");
-    if (a == 151)
-        printf("v");
-    if (a == 152)
-        printf("w");
-    if (a == 153)
-        printf("x");
-    if (a == 154)
-        printf("y");
-    if (a == 155)
-        printf("z");
-    if (a == 156 || a == 157 || a == 158 || a == 159)
-        printf("a");
-    if (a == 161 || a == 162)
-        printf("e");
-    if (a == 163)
-        printf("i");
-    if (a == 164 || a == 165 || a == 166)
-        printf("o");
-    if (a == 167)
-        printf("u");
-    if (a == 168)
-        printf("c");
-    if (a == 169)
-        printf("A");
-    if (a == 171)
-        printf("B");
-    if (a == 172)
-        printf("C");
-    if (a == 173)
-        printf("D");
-    if (a == 174)
-        printf("E");
-    if (a == 175)
-        printf("F");
-    if (a == 176)
-        printf("G");
-    if (a == 177)
-        printf("H");
-    if (a == 178)
-        printf("I");
-    if (a == 179)
-        printf("J");
-    if (a == 181)
-        printf("K");
-    if (a == 182)
-        printf("L");
-    if (a == 183)
-        printf("M");
-    if (a == 184)
-        printf("N");
-    if (a == 185)
-        printf("O");
-    if (a == 186)
-        printf("P");
-    if (a == 187)
-        printf("Q");
-    if (a == 188)
-        printf("R");
-    if (a == 189)
-        printf("S");
-    if (a == 191)
-        printf("T");
-    if (a == 192)
-        printf("U");
-    if (a == 193)
-        printf("V");
-    if (a == 194)
-        printf("W");
-    if (a == 195)
-        printf("X");
-    if (a == 196)
-        printf("Y");
-    if (a == 197)
-        printf("Z");
-    if (a == 198 || a == 199 || a == 211 || a == 212)
-        printf("A");
-    if (a == 213 || a == 214)
-        printf("E");
-    if (a == 215)
-        printf("I");
-    if (a == 216 || a == 217 || a == 218)
-        printf("O");
-    if (a == 219)
-        printf("U");
-    if (a == 221)
-        printf("C");
-    if (a == 222)
-        printf(",");
-    if (a == 223)
-        printf(".");
-    if (a == 224)
-        printf("!");
-    if (a == 225)
-        printf("?");
-    if (a == 226)
-        printf(";");
-    if (a == 227)
-        printf(":");
-    if (a == 228)
-        printf("_");
-    if (a == 229)
-        printf("(");
-    if (a == 231)
-        printf(")");
-    if (a == 232)
-        printf(".");
-    if (a == 233)
-        printf("#");
-    if (a == 234)
-        printf("$");
-    if (a == 235)
-        printf("%%");
-    if (a == 236)
-        printf("@");
-    if (a == 237)
-        printf(" ");
-    if (a == 238)
-        printf("\n");
-    if (a == 239)
-        printf("{");
-    if (a == 241)
-        printf("}");
-    if (a == 242)
-        printf("'");
-}
-*/
 
 char codigoParaSimbolo(int codigo)
 {
@@ -314,7 +110,7 @@ void escreverArquivo()
         printf("Erro ao abrir o arquivo");
         exit(1);
     }
-    
+
     /* Conversão de código para símbolo */
     // Recebe os três dígitos para convertê-los para a letra correspondente
     char str[3], simbolo;
@@ -335,71 +131,81 @@ void escreverArquivo()
             }
         }
     }
-    
+
     fclose(arq);
 }
 
 int main(int argc, char *argv[])
-{ // tentando passar o bloco, n e d e o nome do arquivo com os outros blocos
-    pthread_t tid[NTHREADS];
-    t_Args *args;
+{
     char *n, *d;
 
     // Inicia a contagem do tempo
     GET_TIME(inicio);
 
-    n = argv[1];
-    d = argv[2];
-    char *texto = lerArquivo(argv[3]);
+    if (argc < 3)
+    {
+        printf("Digite: %s <arquivo de entrada> <número de threads>\n", argv[0]);
+        return -1;
+    }
+
+    char *texto = lerArquivo(argv[1]);
+    nThreads = atoi(argv[2]);
+    
+    pthread_t tid[nThreads];
+    t_Args *args;
+
+
     int qntBlocos = 1;
     for (int i = 0; i < strlen(texto); i++)
-    { // Começa o processo de separação da strings
+    {
+        // Calcula a quantidade de blocos
         if (texto[i] == ' ')
         {
             qntBlocos++;
         }
     }
+    qntBlocos -= 2;
+
+    // Separa a string com todos os blocos em um vetor de strings (blocos)
     char *strings[qntBlocos];
     int j = 0;
-    strings[j] = strtok(texto, " ");
+    n = strtok(texto, " ");
+    d = strtok(NULL, " ");
+    strings[j] = strtok(NULL, " ");
     while (strings[j] != NULL)
     {
         j++;
-        strings[j] = strtok(NULL, " ");
+        strings[j] = strtok(NULL, " "); // Equivalente ao .split() em java, separa a string até o determinado ponto
     }
-
     gargv = strings;
     gargc = qntBlocos;
 
     // Cria as threads
-    for (int i = 0; i < NTHREADS; i++)
+    for (int i = 0; i < nThreads; i++)
     {
         args = malloc(sizeof(t_Args));
         args->id = i;
         args->n = n;
         args->d = d;
-        // args->argumentos = argv;
-        // args->qntArgumentos = argc;
         pthread_create(&tid[i], NULL, descriptarThread, (void *)args);
     }
+
     // Espera todas as threads terminarem
-    for (int i = 0; i < NTHREADS; i++)
+    for (int i = 0; i < nThreads; i++)
     {
         pthread_join(tid[i], NULL);
     }
+
     for (int i = 0; i < gargc; i++)
     {
         printf("DESCRIPTADO: %s\n", gargv[i]);
     }
 
     escreverArquivo();
-    
+
     // Finaliza a contagem do tempo
     GET_TIME(fim);
     elapsed = fim - inicio;
     printf("\nO codigo demorou %f segundos\n", elapsed);
-    // faroeste caboclo: 6.199836e-01 segundos
-    // 1.590804e+00 segundos
-    // 22.669604 segundos
     return 0;
 }
