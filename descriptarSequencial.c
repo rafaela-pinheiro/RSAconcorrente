@@ -129,17 +129,20 @@ int main(int argc, char *argv[])
     }
     qntBlocos -= 2; // Retira os dois primeiros blocos (n e d)
     qnt = qntBlocos;
-    blocos = (char **)malloc(qntBlocos * sizeof(char *));
+    char *b[qntBlocos];
     int j = 0;
     n = strtok(texto, " ");
     d = strtok(NULL, " ");
-    blocos[j] = strtok(NULL, " ");
-    while (blocos[j] != NULL)
+    b[j] = strtok(NULL, " ");
+    while (b[j] != NULL)
     {
         j++;
-        blocos[j] = strtok(NULL, " ");
+        b[j] = strtok(NULL, " ");
     }
+    blocos = b;
     descriptar(n, d);
+    for(int i = 0; i < qnt; i++)
+        printf("%s\n", blocos[i]);
     escreverArquivo();
     GET_TIME(fim);
     printf("Tempo de execução: %lf\n", fim - inicio);

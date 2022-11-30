@@ -195,12 +195,10 @@ int main(int argc, char *argv[])
     {
         pthread_join(tid[i], NULL);
     }
-    /*
     for (int i = 0; i < gargc; i++)
     {
         printf("DESCRIPTADO: %s\n", gargv[i]);
     }
-    */
     escreverArquivo();
 
     // Finaliza a contagem do tempo
