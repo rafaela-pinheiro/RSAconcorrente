@@ -18,9 +18,24 @@ Para recuperar a mensagem $m$ a partir de $c$, é necessário calcular $m \equiv
 ## Segurança
 A segurança desse tipo de criptografia é baseada na dificuldade de fatoração de números tão grandes. Se conseguirmos fatorar $n$, então conseguimos calcular $p$ e $q$, e com isso, a chave privada $d$. Portanto, utilizamos a biblioteca GMP (GNU Multiple Precision Arithmetic Library) para realizar operações com números grandes e não comprometer a segurança do RSA.
 
-## To do
+## Como Executar o programa
+Para a compilação dos dois programas, é necessária a instalação das bibliotecas pthread e gmp, além da math.h.  
+A compilação pode ser dada pelo comando:
+
+~~~bash
+gcc decriptar.c -o dec -lgmp -lm -lpthread
+gcc decriptarSequencial.c -o decSeq -lgmp -lm
+~~~
+Para a execução, temos: 
+~~~bash
+./dec <nomeDoArquivo.txt> <nThreads>
+./decSeq <nomeDoArquivo.txt>
+~~~
+
+## To do 
 - [x] Resolver a falha de segmentação (com arquivos grandes) em descriptar.c
 - [x] Atualizar dicionário número->letra e letra->número, removendo caracteres que não aparecem no prompt
 - [x] Gerar txt (em python) do texto original sem acentos
 - [x] Gerar txt (em c) do texto descriptado (sem acentos)
 - [x] Nos testes, comparar o txt descriptado com o txt original
+- [ ] Paralelizar a leitura dos arquivos
